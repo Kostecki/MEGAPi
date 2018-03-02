@@ -1,7 +1,7 @@
 # MEGAPi
 Assorted documentation for setting up a Raspberry Pi Zero W as a WiFi hotspot with 3G connectivity for our MEGABoominator project.
 
-The project is using a Raspberry Pi Zero W (but other flavors of Pi should work) running Raspbian Stretch Lite (Version November 2017 at time moment). The repository contains a "*modified*" version of the Raspbian image for easily getting the project up and running as we need it.   
+The project is using a Raspberry Pi Zero W (but other flavors of Pi should work) running Raspbian Stretch Lite (Version November 2017 as of March 2nd 2018). The repository contains a "*modified*" version of the Raspbian image for easily getting the project up and running as we need it.   
 
 **These changes are:**
 
