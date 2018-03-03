@@ -17,10 +17,274 @@ It's probably also a good things to do the following after installing:
 * Change root password
 
 ## Software
-* Hostapd
+* hostapd
+* dnsmasq
+* wvdial
+* ppp
+* sg3-utils
+* iptables-persistent
+
+Install the software required for networking
+```
+sudo apt install hostapd dnsmasq
+```
+
+Stop `hostapd and dnsmasq` services
+```
+sudo systemctl stop dnsmasq
+sudo systemctl stop hostapd
+```
+
+## Static IP
+```
+sudo nano /etc/dhcpcd.conf
+```
+
+and add the following to set a static IP for `wlan0`
+
+```
+#Set static ip for wlan0
+interface wlan0
+  static ip_address=10.0.0.1/24
+```
+
+Restart `dhcpcd`
+```
+sudo service dhcpcd restart
+```
+
+## Configuring DHCP
+Edit the `dnsmasq` config
+
+```
+sudo nano /etc/dnsmasq.conf
+```
+
+and add the following to setup DHCP
+
+```
+interface=wlan0
+  dhcp-range=10.0.0.10,10.0.0.100,255.255.255.0,24h
+  dhcp-option=wireless-net,3
+  dhcp-option=wireless-net,6
+```
+
+**or**
+
+```
+interface=wlan0
+  dhcp-range=10.0.0.10,10.0.0.100,255.255.255.0,24h
+  dhcp-option=6,9.9.9.9,8.8.8.8
+```
+The first option will provide addresses in the range 10.0.0.10 to 10.0.0.100 with a lease time of 24 hours and prohibit sending DNS server options to the client - this is useful for allowing phones to connect to the network but still use cellular for data.   
+The send option will do the same, but set `9.9.9.9` and `8.8.8.8` as DNS servers.
+
+## Configuring AP
+Edit the `hostapd` config
+```
+sudo nano /etc/hostapd/hostapd.conf
+```
+
+and add the following to setup the AP
+
+```
+#Set interface
+interface=wlan0
+
+#Interface driver
+driver=nl80211
+
+#Enable 802.11g
+hw_mode=g
+
+#Enable 802.11n
+ieee80211n=1
+
+#Something with QoS
+wmm_enabled=1
+
+#Set WiFi channel (0 for auto)
+channel=11
+
+#Set country (for channel regulation and such)
+country_code=DK
+
+#Enabled country
+ieee80211d=1
+
+#Set SSID
+ssid=MEGABoominator
+
+#Set WiFi password
+wpa_passphrase=ThunderDucks
+
+#Set security type (1 = WPA, 2 = WEP (NOOOOO) & 3 = Both)
+auth_algs=1
+
+#WPA2 only
+wpa=2
+
+#Use pre-shared key
+wpa_key_mgmt=WPA-PSK
+
+#Something with encrypting protocols..
+wpa_pairwise=CCMP TKIP
+rsn_pairwise=CCMP
+
+#Disbale MAC address filtering
+macaddr_acl=0
+```
+
+tell the system where to find this configuration file
+
+```
+sudo nano /etc/default/hostapd
+```
+
+to specific the configuration file
+
+```
+DAEMON_CONF="/etc/hostapd/hostapd.conf"
+```
+
+Start the services again
+```
+sudo systemctl start dnsmasq
+sudo systemctl start hostapd
+```
+
+## 3G connectivity
+Install the remaining software
+```
+sudo apt install wvdial ppp sg3-utils insserv
+```
+
+Edit the `wvdial` config
+```
+sudo nano /etc/wvdial.conf
+```
+
+the following snippet will setup the modem to work with our Lebara cell plan. 
+
+```
+[Dialer Defaults]
+Init1 = ATZ
+Init2 = ATQ0 V1 E1 S0=0 &C1 &D2 +FCLASS=0
+Init3 = AT+CGDCONT=1, "IP", "internet"
+
+Modem Type = Analog Modem
+ISDN = 0
+NEW PPPD = yes
+Username = dummy
+Password = dummy
+Modem = /dev/ttyUSB0
+Dial Command = ATD
+Stupid Mode = 1
+Phone = *99#
+Baud = 115200
+```
+
+`"internet"` needs to be set to the right `APN`:
+>Replace YOUR_APN and the Phone entry by whatever is appropriate for your connection.  For Bell, the APN was pda.bell.ca.  One useful trick is (when the dongle is in modem mode) to run wvdialconf as a regular user (not root).  It will communicate with the usb serial and try out different options, reporting on the results of what works without actually changing the wvdial.conf file (since it should be owned by root).
+
+Edit `wvdial`
+```
+sudo nano /etc/ppp/peers/wvdial
+```
+
+with the following because of reasons
+
+```
+noauth
+local
+name wvdial
+usepeerdns
+```
+
+Add a new interface for the modem
+```
+sudo nano /etc/network/interfaces
+```
+
+by adding
+```
+#3G Modem
+iface ppp0 inet wvdial
+```
+
+Download [autoconnect-1.0.zip](autoconnect-1.0.zip) and extract the contents to the appropriate locations
+```
+/etc
+/etc/default/autoconnect
+/etc/init.d/autoconnect
+```
+
+Edit the `autoconnect`-script in `/etc/default/autoconnect` and change values as required to fit the USB modem.
+
+```
+sudo nano /etc/default/autoconnect
+```
+```
+# autoconnect params
+
+# USB_ID -- the modem mode id we *want* to see with lsusb (e.g. 12d1:14ac for Huawei E182E, 12d1:1c05 for E173s)
+USB_ID="12d1:1001"
+
+# SG_DEVICE -- the device that /dev/cdrom points to when in removable storage mode
+SG_DEVICE="/dev/sr0"
+
+# SG_SWITCH_COMMAND -- some sg_raw magic, which I found burried in the usb_switchmode Message
+SG_SWITCH_COMMAND="11 06 20 00 00 01 00"
+
+# CONNECTION_INTERFACE -- name of interface we want to bring up
+CONNECTION_INTERFACE="ppp0"
+
+# USB_SWITCH_TIME -- time to wait for the switch to happen and for udev to setup the ttyUSB* (seconds)
+USB_SWITCH_TIME=10
+```
+
+The important thing here is the `USB_ID` and `SG_DEVICE`.
+
+## Network Address Translation
+Edit `sysctl.conf`
+```
+sudo nano /etc/sysctl.conf
+```
+
+Add to the bottom:
+```
+net.ipv4.ip_forward=1
+```
+
+Also the following to activate it immediately
+```
+sudo sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
+```
+
+Install `iptables-persistent` to have the rules persist on reboot
+```
+sudo apt install iptables-persistent
+```
+
+To actually get an internet connection from the 3G modem when connected to the Pi via WiFi a connection between the two interfaces wlan0 and ppp0 needs to me established. This is done with iptables:
+
+```
+sudo iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+sudo iptables -A FORWARD -i ppp0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo iptables -A FORWARD -i wlan0 -o ppp0 -j ACCEPT
+```
+
+To make this happen on reboot (so you don't have to type it every time) run
+```
+sudo sh -c "iptables-save > /etc/iptables/rules.v4"
+```
+
+TODO: Autostart `autoconnect` on reboot
 
 ## Resources
 * https://www.raspberrypi.org/forums/viewtopic.php?f=38&t=50543
 * https://learn.adafruit.com/setting-up-a-raspberry-pi-as-a-wifi-access-point/install-software
 * http://blog.pi3g.com/2014/04/make-raspbian-system-read-only/
 * https://petr.io/en/blog/2015/11/09/read-only-raspberry-pi-with-jessie/
+* https://flyingcarsandstuff.com/2014/11/reliable-3g-connections-with-huawei-e182ee173s-on-raspberry-pi/
+* https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md
