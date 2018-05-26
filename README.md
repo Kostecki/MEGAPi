@@ -127,7 +127,7 @@ wpa=2
 #Use pre-shared key
 wpa_key_mgmt=WPA-PSK
 
-#Something with encrypting protocols..
+#Something with encryption protocols..
 wpa_pairwise=CCMP TKIP
 rsn_pairwise=CCMP
 
@@ -141,7 +141,7 @@ tell the system where to find this configuration file
 sudo nano /etc/default/hostapd
 ```
 
-to specific the configuration file
+to specify the configuration file
 
 ```
 DAEMON_CONF="/etc/hostapd/hostapd.conf"
