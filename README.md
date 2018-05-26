@@ -1,7 +1,7 @@
 # MEGAPi
 Assorted documentation for setting up a Raspberry Pi Zero W as a WiFi hotspot with 3G connectivity for our Chromecast-enabled MEGABoominator project.
 
-The project is using a Raspberry Pi Zero W (but other flavors of Pi should work) running Raspbian Stretch Lite (Version November 2017 as of March 2nd 2018). The repository contains a "*modified*" version of the Raspbian image for easily getting the project up and running as we need it. It requires an 8GB SD card because that's what i'm using ¯\\\_(ツ)_/¯
+The project is using a Raspberry Pi Zero W (but other flavors of Pi should work) running Raspbian Stretch Lite (Version April 2018 as of May 26th 2018). The repository contains a "*modified*" version of the Raspbian image for easily getting the project up and running as we need it. It requires an 8GB SD card because that's what i'm using ¯\\\_(ツ)_/¯
 
 **These changes are:**
 
@@ -13,7 +13,7 @@ The project is using a Raspberry Pi Zero W (but other flavors of Pi should work)
 * Filesystem expanded
 * `ACT Led` set to always be off
 
-It's probably also a good things to do the following after installing:
+It's probably also a good idea to do the following after installing:
 * Change root password
 
 ## Software
@@ -74,10 +74,10 @@ interface=wlan0
 ```
 interface=wlan0
   dhcp-range=10.0.0.10,10.0.0.100,255.255.255.0,24h
-  dhcp-option=6,9.9.9.9,8.8.8.8
+  dhcp-option=6,1.1.1.1,1.0.0.1
 ```
 The first option will provide addresses in the range 10.0.0.10 to 10.0.0.100 with a lease time of 24 hours and prohibit sending DNS server options to the client - this is useful for allowing phones to connect to the network but still use cellular for data.   
-The send option will do the same, but set `9.9.9.9` and `8.8.8.8` as DNS servers.
+The send option will do the same, but set `1.1.1.1` and `1.0.0.1` as DNS servers.
 
 ## Configuring AP
 Edit the `hostapd` config
