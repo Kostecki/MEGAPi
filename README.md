@@ -23,6 +23,8 @@ It's probably also a good idea to do the following after installing:
 * ppp
 * sg3-utils
 * iptables-persistent
+* dnsmasq-utils
+* hostapd_cli
 
 Install the software required for networking
 ```
