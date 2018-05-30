@@ -439,6 +439,11 @@ rm /var/lib/misc/dnsmasq.leases
 ln -s /tmp/dnsmasq.leases /var/lib/misc/dnsmasq.leases
 ```
 
+installation of `resolvconf` is also required
+```
+apt install resolvconf
+```
+
 Place the following at the end of `/etc/bash.bashrc` for an easy way to switch back and forth between `RO` and `RW`
 ```
 # set variable identifying the filesystem you work in (used in the prompt below)
