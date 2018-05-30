@@ -425,7 +425,7 @@ tmpfs	/var/tmp	tmpfs	nodev,nosuid	0	0
 tmpfs   /tmp        tmpfs   nodev,nosuid    0   0
 ```
 
-Move `dhcpd.resolv` to `/tmp`
+Move `resolv.conf` to `/tmp`
 ```
 touch /tmp/dhcpcd.resolv.conf
 rm /etc/resolv.conf
