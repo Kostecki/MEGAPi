@@ -84,7 +84,7 @@ The send option will do the same, but set `1.1.1.1` and `1.0.0.1` as DNS servers
 # Setup DHCP for MEGAPi
 interface=wlan0
   dhcp-option=6,1.1.1.1,1.0.0.1
-  dhcp-range=10.0.0.20,10.0.0.20,255.255.255.0,6h
+  dhcp-range=10.0.0.20,10.0.0.20,255.255.255.0,1h
   dhcp-host=54:60:09:FC:47:A2,10.0.0.2 #Chromecast Audio
   dhcp-host=F0:98:9D:D5:BC:AA,10.0.0.10 #Jacobs iPhone
 
