@@ -396,10 +396,13 @@ sudo iptables -A FORWARD -i ppp0 -o wlan0 -m state --state RELATED,ESTABLISHED -
 sudo iptables -A FORWARD -i wlan0 -o ppp0 -j ACCEPT
 ```
 
-To make this happen on reboot (so you don't have to type it every time) run
+To make this happen on reboot do
 ```
 sudo sh -c "iptables-save > /etc/iptables/rules.v4"
 ```
+
+## Read only sd card
+TODO
 
 ## Resources
 * https://www.raspberrypi.org/forums/viewtopic.php?f=38&t=50543
