@@ -435,8 +435,8 @@ ln -s /tmp/dhcpcd.resolv.conf /etc/resolv.conf
 Move `dnsmasq.leases` to `/tmp`
 ```
 touch /tmp/dnsmasq.leases
-rm /var/lib/dnsmasq.leases
-ln -s /tmp/dnsmasq.leases /var/lib/dnsmasq.leases
+rm /var/lib/misc/dnsmasq.leases
+ln -s /tmp/dnsmasq.leases /var/lib/misc/dnsmasq.leases
 ```
 
 Place the following at the end of `/etc/bash.bashrc` for an easy way to switch back and forth between `RO` and `RW`
