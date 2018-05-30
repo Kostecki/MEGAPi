@@ -252,20 +252,6 @@ Enable the service at startup
 sudo systemctl enable dhcp-release.service
 ```
 
-It's probably also a good idea to clear the `dnsmasq.leases` on boot to make sure there's nothing left over from a previous session that the script didn't catch
-
-```
-sudo nano /etc/rc.local
-```
-
-Add
-```
-#clear dnsmasq dhcp leases
-service dnsmasq stop
-rm /var/lib/misc/dnsmasq.leases
-service dnsmasq start
-```
-
 ## 3G connectivity
 Install the remaining software
 ```
@@ -403,8 +389,108 @@ To make this happen on reboot do
 sudo sh -c "iptables-save > /etc/iptables/rules.v4"
 ```
 
-## Read only sd card
-TODO
+## Read-only SD card
+Randomly killing the power (as you probably would with a headless Pi) is bad for the SD card and can lead to corruption of the file system. To avid this the pi can be setup to run in read-only mode.
+
+Enable fastboot, disable swap and turn on read-only by editing `cmdlinex.txt`
+```
+sudo nano /boot/cmdline.txt
+```
+
+Add to the end of the line
+```
+fastboot noswap ro
+```
+
+Move `spool` (whatever that means)
+```
+rm -rf  /var/spool
+ln -s /tmp /var/spool
+```
+
+Edit `fstab`
+```
+sudo nano /etc/fstab
+```
+
+Add `ro` to the root partition `/` so that i looks like this (name of the partition might vary)
+```
+PARTUUID=b91f7100-02  /               ext4    defaults,noatime,ro  0       1
+```
+
+Additionally add the following to the bottom of the file
+```
+tmpfs	/var/log	tmpfs   nodev,nosuid	0	0
+tmpfs	/var/tmp	tmpfs	nodev,nosuid	0	0
+tmpfs   /tmp        tmpfs   nodev,nosuid    0   0
+```
+
+Move `dhcpd.resolv` to `/tmp`
+```
+touch /tmp/dhcpcd.resolv.conf
+rm /etc/resolv.conf
+ln -s /tmp/dhcpcd.resolv.conf /etc/resolv.conf
+```
+
+Move `dnsmasq.leases` to `/tmp`
+```
+touch /tmp/dnsmasq.leases
+rm /var/lib/dnsmasq.leases
+ln -s /tmp/dnsmasq.leases /var/lib/dnsmasq.leases
+```
+
+Place the following at the end of `/etc/bash.bashrc` for an easy way to switch back and forth between `RO` and `RW`
+```
+# set variable identifying the filesystem you work in (used in the prompt below)
+fs_mode=$(mount | sed -n -e "s/^.* on \/ .*(\(r[w|o]\).*/\1/p")
+# alias ro/rw 
+alias ro='mount -o remount,ro / ; fs_mode=$(mount | sed -n -e "s/^.* on \/ .*(\(r[w|o]\).*/\1/p")'
+alias rw='mount -o remount,rw / ; fs_mode=$(mount | sed -n -e "s/^.* on \/ .*(\(r[w|o]\).*/\1/p")'
+# setup fancy prompt
+export PS1='\[\033[01;32m\]\u@\h${fs_mode:+($fs_mode)}\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+# aliases for mounting boot volume
+alias roboot='mount -o remount,ro /boot'
+alias rwboot='mount -o remount,rw /boot'
+```
+
+Enable `Watchdog`
+```
+# enter RW mode
+rw
+
+# enable watchdog
+modprobe bcm2708_wdog; apt-get install watchdog
+
+# add bcm2708_wdog to /etc/modules to load it at boot time
+$ nano /etc/modules
+# /etc/modules: kernel modules to load at boot time.
+#
+# This file contains the names of kernel modules that should be loaded
+# at boot time, one per line. Lines beginning with "#" are ignored.
+bcm2708_wdog
+
+# edit watchdog config /etc/watchdog.conf and enable (uncomment) following lines:
+
+watchdog-device = /dev/watchdog
+max-load-1
+
+# start watchdog at system start and start right away
+insserv watchdog; /etc/init.d/watchdog start
+
+# Edit /lib/systemd/system/watchdog.service and add:
+[Install]
+WantedBy=multi-user.target
+
+# now it should be enabled properly
+systemctl enable watchdog
+
+# setup automatic reboot after kernel panic in /etc/sysctl.conf (add to the end)
+kernel.panic = 10
+
+# finish and reboot
+ro
+reboot
+```
 
 ## Resources
 * https://www.raspberrypi.org/forums/viewtopic.php?f=38&t=50543
