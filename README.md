@@ -529,3 +529,4 @@ dtparam=act_led_activelow=on
 * https://petr.io/en/blog/2015/11/09/read-only-raspberry-pi-with-jessie/
 * https://flyingcarsandstuff.com/2014/11/reliable-3g-connections-with-huawei-e182ee173s-on-raspberry-pi/
 * https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md
+* https://www.jeffgeerling.com/blogs/jeff-geerling/raspberry-pi-zero-conserve-energy
