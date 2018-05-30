@@ -83,11 +83,18 @@ The send option will do the same, but set `1.1.1.1` and `1.0.0.1` as DNS servers
 ```
 # Setup DHCP for MEGAPi
 interface=wlan0
+  #DHCP Servers
   dhcp-option=6,1.1.1.1,1.0.0.1
-  dhcp-range=10.0.0.20,10.0.0.20,255.255.255.0,1h
-  dhcp-host=54:60:09:FC:47:A2,10.0.0.2 #Chromecast Audio
-  dhcp-host=F0:98:9D:D5:BC:AA,10.0.0.10 #Jacobs iPhone
 
+  #DHCP Address Range
+  dhcp-range=10.0.0.20,10.0.0.20,255.255.255.0,1h
+
+  #Static IP Assingments
+  dhcp-host=54:60:09:FC:47:A2,10.0.0.2 #Chromecast Audio
+  #dhcp-host=,10.0.0.3 #ESP8266
+  dhcp-host=F0:98:9D:D5:BC:AA,10.0.0.10 #Jacobs iPhone
+  dhcp-host=00:24:D7:BA:10:68,10.0.0.11 #ITMDKLT027
+  dhcp-host=DC:56:E7:A2:28:C5,10.0.0.12 #Pedes iPhone
 ```
 
 This sets the DHCP as above but limits the DHCP range to a single IP and sets two static IP assignments.
