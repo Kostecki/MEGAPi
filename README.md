@@ -79,6 +79,19 @@ interface=wlan0
 The first option will provide addresses in the range 10.0.0.10 to 10.0.0.100 with a lease time of 24 hours and prohibit sending DNS server options to the client - this is useful for allowing phones to connect to the network but still use cellular for data.   
 The send option will do the same, but set `1.1.1.1` and `1.0.0.1` as DNS servers.
 
+**or (the current working config used in the Boominator)**
+```
+# Setup DHCP for MEGAPi
+interface=wlan0
+  dhcp-option=6,1.1.1.1,1.0.0.1
+  dhcp-range=10.0.0.20,10.0.0.20,255.255.255.0,6h
+  dhcp-host=54:60:09:FC:47:A2,10.0.0.2 #Chromecast Audio
+  dhcp-host=F0:98:9D:D5:BC:AA,10.0.0.10 #Jacobs iPhone
+
+```
+
+This sets the DHCP as above but limits the DHCP range to a single IP and sets two static IP assignments.
+
 ## Configuring AP
 Edit the `hostapd` config
 ```
@@ -133,6 +146,11 @@ rsn_pairwise=CCMP
 
 #Disbale MAC address filtering
 macaddr_acl=0
+
+#Required to make hostapd_cli work
+ctrl_interface=/var/run/hostapd
+ctrl_interface_group=0
+
 ```
 
 tell the system where to find this configuration file
@@ -151,6 +169,78 @@ Start the services again
 ```
 sudo systemctl start dnsmasq
 sudo systemctl start hostapd
+```
+
+## DHCP Lease Hack
+The DHCP scope has previous been set to just a single address as we don't want more than the "DJ" using the WiFi and wasting our precious gigabytes.   
+To achieve this we need to mess with the network and make sure that DHCP leases are released as soon as a client disconnects instead of having to wait for the lease time to expire.
+
+Install `hostapd_cli` and `dnsmasq-utils` to get access to `dhcp_release`
+```
+sudo apt install hostapd_cli dnsmasq-utils
+```
+
+`dhcp_release` makes it possible to force dnsmasq to release a lease before the actual expiry time. Together with `hostapd_cli` it's possible to execute a script when a client disconnects and force release that clients lease:
+
+```
+#dhcp-release-script.sh
+#!/bin/bash
+#Chromecast, Jacob iPhone, ITMDKLT027
+staticDevicesMac=("54:60:09:fc:47:a2" "f0:98:9d:d5:bc:aa" "00:24:d7:ba:10:68")
+
+if [[ $2 == "AP-STA-DISCONNECTED" ]]
+then
+  if [[ ! " ${staticDevicesMac[@]} " =~ " ${3} " ]]
+  then
+    dhcp_release $1 10.0.0.20 $3
+  fi
+
+  #if [[ " ${staticDevicesMac[@]} " =~ " ${3} " ]]
+  #then
+    #echo "2: someone has disconnected with mac id $3 on $1"
+  #fi
+fi
+```
+The staticDevices is an array containing the MAC adresses of clients with static IPs that shouldn't trigger the dhcp_release-script.
+
+Make the script executable
+```
+sudo chmod +x dhcp-release-script.sh
+```
+
+Create a new systemd-service to start hostapd_cli with the bash script:
+```
+sudo nano /etc/systemd/system/dhcp-release.service
+```
+
+with the follwing content
+
+```
+[Unit]
+Description=Release DHCP lease on diconnect
+After=hostapd
+
+[Service]
+Type=simple
+ExecStartPre=/bin/sleep 15
+ExecStart=/usr/sbin/hostapd_cli -a /home/pi/dhcp-release-script.sh
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
+```
+
+The service waits 15 seconds before starting to make sure `hostapd` is running as the sevrice will fail otherwise.
+
+Reload the systemctl daemon
+```
+sudo systemctl daemon-reload
+```
+
+Enable the service at startup
+```
+sudo systemctl enable dhcp-release.service
 ```
 
 ## 3G connectivity
@@ -245,6 +335,18 @@ USB_SWITCH_TIME=10
 
 The important thing here is the `USB_ID` and `SG_DEVICE`.
 
+Getting `autoconnect` to autostart and bring up the ppp0 interface on boot seems a bit wonkey. It seems like it requires stopping and starting the service after boot. It's gross, but it works:
+
+```
+sudo nano /etc/rc.local
+```
+
+```
+#Hack to fix autoconnect auto-start on boot
+service autoconnect stop
+service autoconnect start
+```
+
 ## Network Address Translation
 Edit `sysctl.conf`
 ```
@@ -278,8 +380,6 @@ To make this happen on reboot (so you don't have to type it every time) run
 ```
 sudo sh -c "iptables-save > /etc/iptables/rules.v4"
 ```
-
-TODO: Autostart `autoconnect` on reboot
 
 ## Resources
 * https://www.raspberrypi.org/forums/viewtopic.php?f=38&t=50543
