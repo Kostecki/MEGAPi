@@ -250,7 +250,7 @@ Enable the service at startup
 sudo systemctl enable dhcp-release.service
 ```
 
-It's probably also a good idea to clear the `dnsmasq.leases` on boot to make sure there's nothing left over from a previous sessing that the script didn't catch
+It's probably also a good idea to clear the `dnsmasq.leases` on boot to make sure there's nothing left over from a previous session that the script didn't catch
 
 ```
 sudo nano /etc/rc.local
