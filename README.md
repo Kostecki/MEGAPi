@@ -439,7 +439,7 @@ rm /var/lib/misc/dnsmasq.leases
 ln -s /tmp/dnsmasq.leases /var/lib/misc/dnsmasq.leases
 ```
 
-installation of `resolvconf` is also required
+Installation of `resolvconf` is also required
 ```
 apt install resolvconf
 ```
@@ -461,6 +461,7 @@ alias rwboot='mount -o remount,rw /boot'
 Enable `Watchdog`
 ```
 # enter RW mode
+sudo -i
 rw
 
 # enable watchdog
