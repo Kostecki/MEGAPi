@@ -335,15 +335,14 @@ USB_SWITCH_TIME=10
 
 The important thing here is the `USB_ID` and `SG_DEVICE`.
 
-Getting `autoconnect` to autostart and bring up the ppp0 interface on boot seems a bit wonkey. It seems like it requires stopping and starting the service after boot. It's gross, but it works:
+Getting the `autoconnect`-service to autostart and bring up the ppp0 interface on boot seems a bit wonkey. Start it using `rc.local`
 
 ```
 sudo nano /etc/rc.local
 ```
 
 ```
-#Hack to fix autoconnect auto-start on boot
-service autoconnect stop
+#Start autoconnect service on boot
 service autoconnect start
 ```
 
