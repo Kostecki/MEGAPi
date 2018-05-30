@@ -498,6 +498,30 @@ ro
 reboot
 ```
 
+# Power Saving
+We're out in the field - every mA counts!
+
+Disable HDMI 
+```
+sudo nano /etc/rc.local
+```
+Add the following to disable HDMI. -p re-enables
+```
+/usr/bin/tvservice -o
+```
+
+Disbaled Act. LED
+```
+sudo nano /boot/config.txt
+```
+
+Add the following lines
+```
+# Disable the ACT LED on the Pi Zero.
+dtparam=act_led_trigger=none
+dtparam=act_led_activelow=on
+```
+
 ## Resources
 * https://www.raspberrypi.org/forums/viewtopic.php?f=38&t=50543
 * https://learn.adafruit.com/setting-up-a-raspberry-pi-as-a-wifi-access-point/install-software
