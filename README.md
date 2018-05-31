@@ -222,11 +222,6 @@ then
   then
     dhcp_release $1 10.0.0.20 $3
   fi
-
-  #if [[ " ${staticDevicesMac[@]} " =~ " ${3} " ]]
-  #then
-    #echo "2: someone has disconnected with mac id $3 on $1"
-  #fi
 fi
 ```
 The staticDevices is an array containing the MAC adresses of clients with static IPs that shouldn't trigger the dhcp_release-script.
