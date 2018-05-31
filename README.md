@@ -31,8 +31,7 @@ It's probably also a good idea to do the following after installing:
 * Change root password
 
 Download the modified base image
-[MEGAPi_Raspbian-April2018_Base.img](https://israndom.win/megapi/MEGAPi_Raspbian-April2018_Base.img)
-
+[MEGAPi_Raspbian-April2018_Base.img](https://israndom.win/megapi/MEGAPi_Raspbian-April2018_Base.img)   
 Downloading the finished image
 [MEGAPi_Raspbian-April2018_Finished.img](https://israndom.win/megapi/MEGAPi_Raspbian-April2018_Finished.img)
 
