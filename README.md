@@ -3,6 +3,9 @@ Assorted documentation for setting up a Raspberry Pi Zero W as a WiFi hotspot wi
 
 The project is using a Raspberry Pi Zero W (but other flavors of Pi should work) running Raspbian Stretch Lite (Version April 2018 as of May 26th 2018)
 
+[Software](#Software)
+[Static IP](#Static IP)
+
 **These changes are:**
 
 * Locale changed to `en_DK`
