@@ -4,6 +4,7 @@ Assorted documentation for setting up a Raspberry Pi Zero W as a WiFi hotspot wi
 The project is using a Raspberry Pi Zero W (but other flavors of Pi should work) running Raspbian Stretch Lite (Version April 2018 as of May 26th 2018)
 
 **Table of Content**
+* [Raspbian](#raspbian)
 * [Software](#software)
 * [Static IP](#static-ip)
 * [Configuring DHCP](#configuring-dhcp)
@@ -15,6 +16,7 @@ The project is using a Raspberry Pi Zero W (but other flavors of Pi should work)
 * [Power Saving](#power-saving)
 * [Resources](#resources)
 
+## Raspbian
 The base image of the Raspbian os has had the following changes made before starting the actual project
 
 * Locale changed to `en_DK`
@@ -27,6 +29,12 @@ The base image of the Raspbian os has had the following changes made before star
 
 It's probably also a good idea to do the following after installing:
 * Change root password
+
+Download the modified base image
+[MEGAPi_Raspbian-April2018_Base.img](https://israndom.win/megapi/MEGAPi_Raspbian-April2018_Base.img)
+
+Downloading the finished image
+[MEGAPi_Raspbian-April2018_Finished.img](https://israndom.win/megapi/MEGAPi_Raspbian-April2018_Finished.img)
 
 ## Software
 * hostapd
