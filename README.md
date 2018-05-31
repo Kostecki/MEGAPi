@@ -3,19 +3,19 @@ Assorted documentation for setting up a Raspberry Pi Zero W as a WiFi hotspot wi
 
 The project is using a Raspberry Pi Zero W (but other flavors of Pi should work) running Raspbian Stretch Lite (Version April 2018 as of May 26th 2018)
 
-- [MEGAPi](#megapi)
-  * [Software](#software)
-  * [Static IP](#static-ip)
-  * [Configuring DHCP](#configuring-dhcp)
-  * [Configuring AP](#configuring-ap)
-  * [DHCP Lease Hack](#dhcp-lease-hack)
-  * [3G connectivity](#3g-connectivity)
-  * [Network Address Translation](#network-address-translation)
-  * [Read-only SD card](#read-only-sd-card)
-  * [Power Saving](#power-saving)
-  * [Resources](#resources)
+**Table of Content**
+* [Software](#software)
+* [Static IP](#static-ip)
+* [Configuring DHCP](#configuring-dhcp)
+* [Configuring AP](#configuring-ap)
+* [DHCP Lease Hack](#dhcp-lease-hack)
+* [3G connectivity](#3g-connectivity)
+* [Network Address Translation](#network-address-translation)
+* [Read-only SD card](#read-only-sd-card)
+* [Power Saving](#power-saving)
+* [Resources](#resources)
 
-**These changes are:**
+The base image of the Raspbian os has had the following changes made before starting the actual project
 
 * Locale changed to `en_DK`
 * Keyboard layout set to `danish`
@@ -510,7 +510,7 @@ ro
 reboot
 ```
 
-# Power Saving
+## Power Saving
 We're out in the field - every mA counts!
 
 Disable HDMI 
