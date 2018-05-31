@@ -10,7 +10,7 @@ The project is using a Raspberry Pi Zero W (but other flavors of Pi should work)
 * [Configuring DHCP](#configuring-dhcp)
 * [Configuring AP](#configuring-ap)
 * [DHCP Lease Hack](#dhcp-lease-hack)
-* [3G connectivity](#3g-connectivity)
+* [3G Connectivity](#3g-connectivity)
 * [Network Address Translation](#network-address-translation)
 * [Read-only SD card](#read-only-sd-card)
 * [Power Saving](#power-saving)
@@ -271,7 +271,7 @@ Enable the service at startup
 sudo systemctl enable dhcp-release.service
 ```
 
-## 3G connectivity
+## 3G Connectivity
 Install the remaining software
 ```
 sudo apt install wvdial ppp sg3-utils insserv
