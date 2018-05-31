@@ -542,10 +542,9 @@ dtparam=act_led_activelow=on
 ```
 
 ## Resources
-* https://www.raspberrypi.org/forums/viewtopic.php?f=38&t=50543
+* https://raspberrypi.org/forums/viewtopic.php?f=38&t=50543
+* https://raspberrypi.org/documentation/configuration/wireless/access-point.md
 * https://learn.adafruit.com/setting-up-a-raspberry-pi-as-a-wifi-access-point/install-software
-* http://blog.pi3g.com/2014/04/make-raspbian-system-read-only/
-* https://petr.io/en/blog/2015/11/09/read-only-raspberry-pi-with-jessie/
 * https://flyingcarsandstuff.com/2014/11/reliable-3g-connections-with-huawei-e182ee173s-on-raspberry-pi/
-* https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md
-* https://www.jeffgeerling.com/blogs/jeff-geerling/raspberry-pi-zero-conserve-energy
+* https://petr.io/en/blog/2015/11/09/read-only-raspberry-pi-with-jessie/
+* https://jeffgeerling.com/blogs/jeff-geerling/raspberry-pi-zero-conserve-energy
