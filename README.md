@@ -446,6 +446,16 @@ rm /etc/resolv.conf
 ln -s /tmp/dhcpcd.resolv.conf /etc/resolv.conf
 ```
 
+DNS seems to be broken on boot if dhcpcd.resolv.conf isn't manually created. Do this in `/etc/rc.local`
+```
+sudo nano /etc/rc.local
+```
+
+Add
+```
+touch /tmp/dhcpcd.resolv.conf
+```
+
 Move `dnsmasq.leases` to `/tmp`
 ```
 touch /tmp/dnsmasq.leases
