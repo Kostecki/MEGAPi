@@ -360,15 +360,27 @@ USB_SWITCH_TIME=10
 
 The important thing here is the `USB_ID` and `SG_DEVICE`.
 
-Getting the `autoconnect`-service to autostart and bring up the ppp0 interface on boot seems a bit wonkey. Start it using `rc.local`
-
-```
-sudo nano /etc/rc.local
-```
-
+Getting the `autoconnect`-service to autostart and bring up the ppp0 interface on boot seems a bit wonkey. Start by adding the following to `/etc/rc.local`
 ```
 #Start autoconnect service on boot
 service autoconnect start
+```
+
+`Wvdial` will complain about problems with `pap-secrets` and `chap-secrets` when connecting. Fixing it requires moving these files to `/tmp` and symlinking back.
+
+Create the symlinks
+```
+ln -s /tmp/ppp-secrets/pap-secrets /etc/ppp/pap-secrets
+ln -s /tmp/ppp-secrets/chap-secrets /etc/ppp/chap-secrets
+```
+
+Add to `/etc/rc.local`
+```
+#Something with ppp and secrets..
+mkdir -p /tmp/ppp-secrets
+
+cp /etc/ppp/original/pap-secrets /tmp/ppp-secrets
+cp /etc/ppp/original/chap-secrets /tmp/ppp-secrets
 ```
 
 ## Network Address Translation
@@ -417,29 +429,34 @@ Make sure `vnStat` is stopped as some extra configuration is needed to make it w
 sudo service vnstat stop
 ```
 
-`vnStat` stores database-files for each network interface in `/var/lib/vnstat` which isn't going to work with the read-only Pi as it won't be able to write to these files. We need to move them to `/tmp` and symlink back to `/var/lib/vnstat`.
+`vnStat` stores database-files for each network interface in `/var/lib/vnstat`. This isn't going to work with the read-only Pi, as it won't be able to write to these files so they have to be moved to `/tmp/vnstat` and symlinked back to `/var/lib/vnstat`.
 
-Create the database-files using `vnStat`
+Create the initla database-files with `vnStat`
 ```
 vnstat -i ppp0 -u
 vnstat -i wlan0 -u
 ```
-
-The database-files needs to be moved from the default directory `/var/lib/vnstat` to `/tmp` and symlinked back. Add to `/etc/rc.local`:
+Set the symlinks
 ```
+ln -s /tmp/vnstat/ppp0 /var/lib/vnstat/original/ppp0
+ln -s /tmp/vnstat/.ppp0 /var/lib/vnstat/original/.ppp0
+
+ln -s /tmp/vnstat/wlan0 /var/lib/vnstat/original/wlan0
+ln -s /tmp/vnstat/.wlan0 /var/lib/vnstat/original/.wlan0
+```
+
+Move the files to `/var/lib/vnstat/original/` for safe keeping. The database-files needs to be moved from the `original`-directory to `/tmp` and given the right permissions on boot. Add to `/etc/rc.local`:
+```
+#Make vnStat work
 mkdir -p /tmp/vnstat
 
-mv /var/lib/vnstat/ppp0 /tmp/vnstat/ppp0
-mv /var/lib/vnstat/.ppp0 /tmp/vnstat/.ppp0
+cp /var/lib/vnstat/original/ppp0 /tmp/vnstat
+cp /var/lib/vnstat/original/.ppp0 /tmp/vnstat
 
-mv /var/lib/vnstat/wlan0 /tmp/vnstat/wlan0
-mv /var/lib/vnstat/.wlan0 /tmp/vnstat/.wlan0
+cp /var/lib/vnstat/original/wlan0 /tmp/vnstat
+cp /var/lib/vnstat/original/.wlan0 /tmp/vnstat
 
-ln -s /tmp/vnstat/ppp0 /var/lib/vnstat/ppp0 
-ln -s /tmp/vnstat/.ppp0 /var/lib/vnstat/.ppp0
-
-ln -s /tmp/vnstat/wlan0 /var/lib/vnstat/wlan0 
-ln -s /tmp/vnstat/.wlan0 /var/lib/vnstat/.wlan0
+chown -R vnstat:vnstat /tmp/vnstat
 ```
 
 Make sure permissions are right for `vnStat`
