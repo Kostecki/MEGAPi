@@ -419,7 +419,7 @@ sudo service vnstat stop
 
 `vnStat` stores database-files for each network interface in `/var/lib/vnstat` which isn't going to work with the read-only Pi as it won't be able to write to these files. We need to move them to `/tmp` and symlink back to `/var/lib/vnstat`.
 
-Creat the database-files using `vnStat`
+Create the database-files using `vnStat`
 ```
 vnstat -i ppp0 -u
 vnstat -i wlan0 -u
@@ -592,3 +592,4 @@ dtparam=act_led_activelow=on
 * https://flyingcarsandstuff.com/2014/11/reliable-3g-connections-with-huawei-e182ee173s-on-raspberry-pi/
 * https://petr.io/en/blog/2015/11/09/read-only-raspberry-pi-with-jessie/
 * https://jeffgeerling.com/blogs/jeff-geerling/raspberry-pi-zero-conserve-energy
+* https://humdi.net/vnstat/
