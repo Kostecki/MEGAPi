@@ -419,33 +419,29 @@ sudo service vnstat stop
 
 `vnStat` stores database-files for each network interface in `/var/lib/vnstat` which isn't going to work with the read-only Pi as it won't be able to write to these files. We need to move them to `/tmp` and symlink back to `/var/lib/vnstat`.
 
-First step is to have `vnStat` create the database-files for `ppp0` and `wlan0` as well just for good measure:
+Create the database-files for both interfaces and make sure to set the right permissions for the `vnstat` folder. Everything is done in `/tmp` so it needs to be done on boot by adding the folloing to `/etc/rc.local` :
 ```
-sudo vnstat -i ppp0 -u
-sudo vnstat -i wlan0 -u
+mkdir -p /tmp/vnstat
+
+touch /tmp/vnstat/ppp0
+touch /tmp/vnstat/.ppp0
+
+touch /tmp/vnstat/wlan0
+touch /tmp/vnstat/.wlan0
+
+chown -R vnstat:vnstat /tmp/vnstat
+chown -R vnstat:vnstat /var/lib/vnstat
 ```
-Then move files and create symlinks
 
+Create the symlinks for the new files
 ```
-mkdir /tmp/vnstat
-
-mv /var/lib/vnstat/ppp0 /tmp/vnstat
-mv /var/lib/vnstat/.ppp0 /tmp/vnstat
-
-mv /var/lib/vnstat/wlan0 /tmp/vnstat
-mv /var/lib/vnstat/.wlan0 /tmp/vnstat
+rm /var/lib/vnstat/*
 
 ln -s /tmp/vnstat/ppp0 /var/lib/vnstat/ppp0 
 ln -s /tmp/vnstat/.ppp0 /var/lib/vnstat/.ppp0
 
 ln -s /tmp/vnstat/wlan0 /var/lib/vnstat/wlan0 
 ln -s /tmp/vnstat/.wlan0 /var/lib/vnstat/.wlan0
-```
-
-Aditinonally make sure that `vnStat` is the owner of the database-files
-```
-sudo chown -R vnstat:vnstat /var/lib/vnstat
-sudo chown -R vnstat:vnstat /tmp/vnstat
 ```
 
 Start `vnStat` again to confirm that everything works as expected
@@ -489,21 +485,10 @@ tmpfs	/var/tmp	tmpfs	nodev,nosuid	0	0
 tmpfs   /tmp        tmpfs   nodev,nosuid    0   0
 ```
 
-Move `resolv.conf` to `/tmp`
+Symlink `/etc/resolv.conf`
 ```
-touch /tmp/dhcpcd.resolv.conf
-rm /etc/resolv.conf
-ln -s /tmp/dhcpcd.resolv.conf /etc/resolv.conf
-```
-
-DNS seems to be broken on boot if dhcpcd.resolv.conf isn't manually created. Do this in `/etc/rc.local`
-```
-sudo nano /etc/rc.local
-```
-
-Add
-```
-touch /tmp/dhcpcd.resolv.conf
+sudo rm /etc/resolv.conf
+sudo ln -s /etc/resolvconf/run/resolv.conf /etc/resolv.conf
 ```
 
 Move `dnsmasq.leases` to `/tmp`
