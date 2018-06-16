@@ -12,6 +12,7 @@ The project is using a Raspberry Pi Zero W (but other flavors of Pi should work)
 * [DHCP Lease Hack](#dhcp-lease-hack)
 * [3G Connectivity](#3g-connectivity)
 * [Network Address Translation](#network-address-translation)
+* [vnStat](#vnstat)
 * [Read-only SD card](#read-only-sd-card)
 * [Power Saving](#power-saving)
 * [Resources](#resources)
@@ -44,6 +45,7 @@ Downloading the finished image
 * iptables-persistent
 * dnsmasq-utils
 * hostapd_cli
+* vnstat
 
 Install the software required for networking
 ```
@@ -401,6 +403,54 @@ sudo iptables -A FORWARD -i wlan0 -o ppp0 -j ACCEPT
 To make this happen on reboot do
 ```
 sudo sh -c "iptables-save > /etc/iptables/rules.v4"
+```
+
+## vnStat
+We use [vnStat](https://humdi.net/vnstat/) to monitor network usage on the pi.
+Install it
+```
+sudo apt install vnstat
+```
+
+Make sure `vnStat` is stopped as some extra configuration is needed to make it work properly with this setup:
+```
+sudo service vnstat stop
+```
+
+`vnStat` stores database-files for each network interface in `/var/lib/vnstat` which isn't going to work with the read-only Pi as it won't be able to write to these files. We need to move them to `/tmp` and symlink back to `/var/lib/vnstat`.
+
+First step is to have `vnStat` create the database-files for `ppp0` and `wlan0` as well just for good measure:
+```
+sudo vnstat -i ppp0 -u
+sudo vnstat -i wlan0 -u
+```
+Then move files and create symlinks
+
+```
+mkdir /tmp/vnstat
+
+mv /var/lib/vnstat/ppp0 /tmp/vnstat
+mv /var/lib/vnstat/.ppp0 /tmp/vnstat
+
+mv /var/lib/vnstat/wlan0 /tmp/vnstat
+mv /var/lib/vnstat/.wlan0 /tmp/vnstat
+
+ln -s /tmp/vnstat/ppp0 /var/lib/vnstat/ppp0 
+ln -s /tmp/vnstat/.ppp0 /var/lib/vnstat/.ppp0
+
+ln -s /tmp/vnstat/wlan0 /var/lib/vnstat/wlan0 
+ln -s /tmp/vnstat/.wlan0 /var/lib/vnstat/.wlan0
+```
+
+Aditinonally make sure that `vnStat` is the owner of the database-files
+```
+sudo chown -R vnstat:vnstat /var/lib/vnstat
+sudo chown -R vnstat:vnstat /tmp/vnstat
+```
+
+Start `vnStat` again to confirm that everything works as expected
+```
+sudo service vnstat start
 ```
 
 ## Read-only SD card
