@@ -419,29 +419,33 @@ sudo service vnstat stop
 
 `vnStat` stores database-files for each network interface in `/var/lib/vnstat` which isn't going to work with the read-only Pi as it won't be able to write to these files. We need to move them to `/tmp` and symlink back to `/var/lib/vnstat`.
 
-Create the database-files for both interfaces and make sure to set the right permissions for the `vnstat` folder. Everything is done in `/tmp` so it needs to be done on boot by adding the folloing to `/etc/rc.local` :
+Creat the database-files using `vnStat`
+```
+vnstat -i ppp0 -u
+vnstat -i wlan0 -u
+```
+
+The database-files needs to be moved from the default directory `/var/lib/vnstat` to `/tmp` and symlinked back. Add to `/etc/rc.local`:
 ```
 mkdir -p /tmp/vnstat
 
-touch /tmp/vnstat/ppp0
-touch /tmp/vnstat/.ppp0
+mv /var/lib/vnstat/ppp0 /tmp/vnstat/ppp0
+mv /var/lib/vnstat/.ppp0 /tmp/vnstat/.ppp0
 
-touch /tmp/vnstat/wlan0
-touch /tmp/vnstat/.wlan0
-
-chown -R vnstat:vnstat /tmp/vnstat
-chown -R vnstat:vnstat /var/lib/vnstat
-```
-
-Create the symlinks for the new files
-```
-rm /var/lib/vnstat/*
+mv /var/lib/vnstat/wlan0 /tmp/vnstat/wlan0
+mv /var/lib/vnstat/.wlan0 /tmp/vnstat/.wlan0
 
 ln -s /tmp/vnstat/ppp0 /var/lib/vnstat/ppp0 
 ln -s /tmp/vnstat/.ppp0 /var/lib/vnstat/.ppp0
 
 ln -s /tmp/vnstat/wlan0 /var/lib/vnstat/wlan0 
 ln -s /tmp/vnstat/.wlan0 /var/lib/vnstat/.wlan0
+```
+
+Make sure permissions are right for `vnStat`
+```
+chown -R vnstat:vnstat /tmp/vnstat
+chown -R vnstat:vnstat /var/lib/vnstat
 ```
 
 Start `vnStat` again to confirm that everything works as expected
