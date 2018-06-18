@@ -1,6 +1,6 @@
 #!/bin/bash
-#Chromecast, Jacob iPhone, ITMDKLT027, Pedes iPhone
-staticdevicesmac=("54:60:09:fc:47:a2" "f0:98:9d:d5:bc:aa" "00:24:d7:ba:10:68" "dc:56:e7:a2:28:c5")
+#Chromecast, ESP8266, Jacob iPhone, ITMDKLT027, Pedes iPhone
+staticdevicesmac=("54:60:09:fc:47:a2" "5C:CF:7F:6E:42:6C" "f0:98:9d:d5:bc:aa" "00:24:d7:ba:10:68" "dc:56:e7:a2:28:c5")
 
 if [[ $2 == "AP-STA-DISCONNECTED" ]]
 then
