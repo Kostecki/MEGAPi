@@ -1,7 +1,7 @@
 # MEGAPi
 Assorted documentation for setting up a Raspberry Pi Zero W as a WiFi hotspot with 3G connectivity for our Chromecast-enabled MEGABoominator project.
 
-The project is using a Raspberry Pi Zero W (but other flavors of Pi should work) running Raspbian Stretch Lite (Version April 2018 as of May 26th 2018)
+The project is using a Raspberry Pi 3 Model B (but other flavors of Pi will probably work) running Raspbian Stretch Lite (Version `April 2018` as of May 26th 2018)
 
 **Table of Content**
 * [Raspbian](#raspbian)
