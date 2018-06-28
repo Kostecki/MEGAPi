@@ -431,24 +431,31 @@ sudo service vnstat stop
 
 `vnStat` stores database-files for each network interface in `/var/lib/vnstat`. This isn't going to work with the read-only Pi, as it won't be able to write to these files so they have to be moved to `/tmp/vnstat` and symlinked back to `/var/lib/vnstat`.
 
-Create the initla database-files with `vnStat`
+Create the initial database-files with `vnStat`
 ```
+vnstat -i eth1 -u
 vnstat -i ppp0 -u
 vnstat -i wlan0 -u
 ```
 Set the symlinks
 ```
-ln -s /tmp/vnstat/ppp0 /var/lib/vnstat/original/ppp0
-ln -s /tmp/vnstat/.ppp0 /var/lib/vnstat/original/.ppp0
+ln -s /tmp/vnstat/wlan0 /var/lib/vnstat/eth1
+ln -s /tmp/vnstat/.wlan0 /var/lib/vnstat/.eth1
 
-ln -s /tmp/vnstat/wlan0 /var/lib/vnstat/original/wlan0
-ln -s /tmp/vnstat/.wlan0 /var/lib/vnstat/original/.wlan0
+ln -s /tmp/vnstat/ppp0 /var/lib/vnstat/ppp0
+ln -s /tmp/vnstat/.ppp0 /var/lib/vnstat/.ppp0
+
+ln -s /tmp/vnstat/wlan0 /var/lib/vnstat/wlan0
+ln -s /tmp/vnstat/.wlan0 /var/lib/vnstat/.wlan0
 ```
 
 Move the files to `/var/lib/vnstat/original/` for safe keeping. The database-files needs to be moved from the `original`-directory to `/tmp` and given the right permissions on boot. Add to `/etc/rc.local`:
 ```
 #Make vnStat work
 mkdir -p /tmp/vnstat
+
+cp /var/lib/vnstat/original/eth1 /tmp/vnstat
+cp /var/lib/vnstat/original/.eth1 /tmp/vnstat
 
 cp /var/lib/vnstat/original/ppp0 /tmp/vnstat
 cp /var/lib/vnstat/original/.ppp0 /tmp/vnstat
