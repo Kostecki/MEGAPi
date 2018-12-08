@@ -418,7 +418,8 @@ sudo sh -c "iptables-save > /etc/iptables/rules.v4"
 ```
 
 ## vnStat
-TODO: Not needed: https://serverfault.com/questions/533513/how-to-get-tx-rx-bytes-without-ifconfig
+*Not needed: https://serverfault.com/questions/533513/how-to-get-tx-rx-bytes-without-ifconfig*
+
 We use [vnStat](https://humdi.net/vnstat/) to monitor network usage on the pi.
 Install it
 ```
