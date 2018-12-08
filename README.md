@@ -417,6 +417,7 @@ To make this happen on reboot do
 sudo sh -c "iptables-save > /etc/iptables/rules.v4"
 ```
 
+##TODO: Not needed: https://serverfault.com/questions/533513/how-to-get-tx-rx-bytes-without-ifconfig
 ## vnStat
 We use [vnStat](https://humdi.net/vnstat/) to monitor network usage on the pi.
 Install it
