@@ -1,0 +1,4 @@
+---
+- name: "Hostname | Change Hostname: {{ hostname_hostname }}"
+  hostname:
+    name: "{{ hostname_hostname }}"

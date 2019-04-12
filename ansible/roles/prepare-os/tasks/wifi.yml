@@ -1,0 +1,6 @@
+---
+- name: "WiFi | Setup WiFi"
+  template:
+    src: "wifi.j2"
+    dest: "/etc/wpa_supplicant/wpa_supplicant.conf"
+    mode: "preserve"

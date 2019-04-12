@@ -1,0 +1,9 @@
+---
+# defaults file for prepare-os
+locale_locale: en_IE.utf8
+
+wifi_country: DK
+wifi_ssid: MEGABoominator
+wifi_psk: ThunderDucks
+
+hostname_hostname: MEGAPi

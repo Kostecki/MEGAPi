@@ -1,0 +1,6 @@
+---
+- hosts: megapi
+  become: yes
+
+  roles:
+    - prepare-os
