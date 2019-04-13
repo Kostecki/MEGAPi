@@ -13,7 +13,6 @@ TODO (maybe, if i can be bothered):
 * Set keyboard layout
 * Expand filesystem
 
-
 Role Variables
 --------------
 

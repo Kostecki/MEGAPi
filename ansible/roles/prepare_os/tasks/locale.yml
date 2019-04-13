@@ -1,12 +1,12 @@
 ---
-- name: locale | check if local {{ locale_locale }} exists
+- name: "locale | check if local {{ locale_locale }} exists"
   shell: "locale -a | grep {{ locale_locale }}"
   register: locale_output
   ignore_errors: true
 
-- name: locale | generate locale
+- name: "locale | generate locale: {{ locale_locale }}"
   command: "/usr/sbin/locale-gen {{ locale_locale }}"
   when: locale_output.stdout == ''
 
-- name: locale | set new locale
+- name: "locale | set new locale: {{ locale_locale }}"
   command: "/usr/sbin/update-locale LANG={{ locale_locale }} LC_ALL={{ locale_locale }}"

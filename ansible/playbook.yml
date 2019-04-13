@@ -3,4 +3,5 @@
   become: yes
 
   roles:
-    - prepare-os
+    - prepare_os
+    - networking

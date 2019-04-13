@@ -1,0 +1,7 @@
+---
+# tasks file for networking'
+
+- import_tasks: static_ip.yml
+- import_tasks: dnsmasq.yml
+- import_tasks: hostapd.yml
+- import_tasks: dhcp_release.yml

@@ -1,0 +1,55 @@
+---
+- name: dnsmasq | install
+  apt:
+    name: dnsmasq
+    update_cache: true
+    state: latest
+
+- name: dnsmasq | stop
+  service:
+    name: dnsmasq
+    state: stopped
+
+- name: dnsmasq | configure (no dns)
+  blockinfile:
+    dest: /etc/dnsmasq.conf
+    block: |
+      # DHCP without DNS
+      interface={{ networking_interface }}
+        # DHCP Servers
+        dhcp-option=wireless-net,3
+        dhcp-option=wireless-net,6
+
+        # DHCP Address Range
+        dhcp-range={{ dnsmasq_ip_range_start }},{{ dnsmasq_ip_range_end }},{{ dnsmasq_subnet_mask }},{{ dnsmasq_lease_time }}
+
+        # Static IP Assignments
+        dhcp-host={{ dnsmasq_static_client1 }}
+        dhcp-host={{ dnsmasq_static_client3 }}
+        dhcp-host={{ dnsmasq_static_client4 }}
+  when: not dnsmasq_with_dns
+  notify:
+  - restart dnsmasq
+
+- name: dnsmasq | configure (with dns)
+  blockinfile:
+    dest: /etc/dnsmasq.conf
+    block: |
+      # DHCP with DNS
+      interface={{ networking_interface }}
+        # DHCP Servers
+        dhcp-option=6,{{ dnsmasq_dns1 }},{{ dnsmasq_dns2 }}
+
+        # DHCP Address Range
+        dhcp-range={{ dnsmasq_ip_range_start }},{{ dnsmasq_ip_range_end }},{{ dnsmasq_subnet_mask }},{{ dnsmasq_lease_time }}
+
+        # Static IP Assignments
+        dhcp-host={{ dnsmasq_static_client1 }}
+        dhcp-host={{ dnsmasq_static_client3 }}
+        dhcp-host={{ dnsmasq_static_client4 }}
+  when: dnsmasq_with_dns
+
+- name: dnsmasq | restart
+  service:
+    name: dnsmasq
+    state: restarted

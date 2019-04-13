@@ -1,5 +1,5 @@
 ---
-# defaults file for prepare-os
+# defaults file for prepare_os
 locale_locale: en_IE.utf8
 
 wifi_country: DK

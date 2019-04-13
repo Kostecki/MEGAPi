@@ -1,0 +1,8 @@
+#!/bin/bash
+#dhcp_release.sh
+
+if [[ $2 == "AP-STA-DISCONNECTED" ]]
+then
+  echo "disconnected: ${3}"
+  dhcp_release $1 10.0.0.20 $3
+fi

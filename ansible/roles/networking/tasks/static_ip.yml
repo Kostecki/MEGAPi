@@ -1,0 +1,15 @@
+---
+- name: "static_ip | set iface, ip: {{ networking_interface }} ({{ static_ip_cidr_addr }})"
+  blockinfile:
+    dest: /etc/dhcpcd.conf
+    block: |
+      #Set static ip for {{ networking_interface }}
+      interface {{ networking_interface }}
+        static ip_address={{ static_ip_cidr_addr }}
+  register: static_ip
+
+- name: "static_ip | restart dhcpcd"
+  service:
+    name: dhcpcd
+    state: restarted
+  when: static_ip.changed

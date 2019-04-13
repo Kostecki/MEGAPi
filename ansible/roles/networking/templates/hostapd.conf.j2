@@ -1,0 +1,49 @@
+#Set interface
+interface={{ networking_interface }}
+
+#Interface driver
+driver={{ hostapd_iface_driver }}
+
+#Enable 802.11g
+hw_mode=g
+
+#Enable 802.11n
+ieee80211n=1
+
+#Something with QoS
+wmm_enabled=1
+
+#Set WiFi channel (0 for auto)
+channel={{ hostapd_wifi_channel }}
+
+#Set country (for channel regulation and such)
+country_code={{ hostapd_wifi_country }}
+
+#Enabled country
+ieee80211d=1
+
+#Set SSID
+ssid={{ hostapd_wifi_ssid }}
+
+#Set WiFi password
+wpa_passphrase={{ hostapd_wifi_password }}
+
+#Set security type (1 = WPA, 2 = WEP (NOOOOO) & 3 = Both)
+auth_algs=1
+
+#WPA2 only
+wpa=2
+
+#Use pre-shared key
+wpa_key_mgmt=WPA-PSK
+
+#Something with encryption protocols..
+wpa_pairwise=CCMP TKIP
+rsn_pairwise=CCMP
+
+#Disable MAC address filtering
+macaddr_acl=0
+
+#Required to make hostapd_cli work
+ctrl_interface=/var/run/hostapd
+ctrl_interface_group=0

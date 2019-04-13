@@ -1,0 +1,11 @@
+---
+- name: "hostname | hostname: {{ hostname_hostname }}"
+  hostname:
+    name: "{{ hostname_hostname }}"
+
+- name: "hostname | edit /etc/hosts"
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '^127\.0\.0\.1[ \t]+localhost'
+    line: '127.0.0.1 localhost {{ hostname_hostname }}'
+    state: present

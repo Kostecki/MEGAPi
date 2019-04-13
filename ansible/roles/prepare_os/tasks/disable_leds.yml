@@ -1,5 +1,5 @@
 ---
-- name: Disable LEDs
+- name: disable_leds | disable
   blockinfile:
     dest: /boot/config.txt
     block: |

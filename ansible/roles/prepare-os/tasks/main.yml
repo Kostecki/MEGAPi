@@ -1,6 +1,0 @@
-# tasks file for prepare-os
-
-- import_tasks: locale.yml
-- import_tasks: wifi.yml
-- import_tasks: hostname.yml
-- import_tasks: disable-leds.yml

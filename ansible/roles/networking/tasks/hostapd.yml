@@ -1,0 +1,43 @@
+---
+- name: hostapd | install
+  apt:
+    name: hostapd
+    update_cache: true
+    state: latest
+
+- name: hostapd | stop
+  service:
+    name: hostapd
+    state: stopped
+
+- name: hostapd | configure
+  template:
+    src: "hostapd.conf.j2"
+    dest: /etc/hostapd/hostapd.conf
+    mode: "preserve"
+
+- name: hostapd | specify config file
+  lineinfile:
+    dest: /etc/default/hostapd
+    regexp: DAEMON_CONF
+    line: DAEMON_CONF="/etc/hostapd/hostapd.conf"
+  register: hostapd_config
+
+- name: hostapd | unmask
+  service:
+    name: hostapd
+    masked: no
+
+- name: hostapd | enable
+  service:
+    name: hostapd
+    enabled: yes
+
+- name: hostapd | reboot
+  when: hostapd_config.changed
+  reboot:
+
+- name: hostapd | start
+  service:
+    name: hostapd
+    state: started

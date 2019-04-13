@@ -1,0 +1,13 @@
+[Unit]
+Description=Release DHCP lease on diconnect
+After=hostapd
+
+[Service]
+Type=simple
+ExecStartPre=/bin/sleep 15
+ExecStart=/usr/sbin/hostapd_cli -a /home/pi/dhcp_release.sh
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target

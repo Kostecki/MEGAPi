@@ -1,5 +1,5 @@
 ---
-- name: "WiFi | Setup WiFi"
+- name: wifi | "setup"
   template:
     src: "wifi.j2"
     dest: "/etc/wpa_supplicant/wpa_supplicant.conf"

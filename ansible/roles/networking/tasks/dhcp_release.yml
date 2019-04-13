@@ -1,0 +1,25 @@
+---
+- name: dhcp_release | install
+  apt:
+   name: dnsmasq-utils
+   update_cache: yes
+   state: latest
+
+- name: dhcp_release | configure script
+  template:
+    src: "dhcp_release.sh.j2"
+    dest: /home/pi/dhcp_release.sh
+    mode: a+x
+
+- name: dhcp_release | new service
+  copy:
+    src: dhcp_release.service
+    dest: /etc/systemd/system/dhcp_release.service
+    mode: 0664
+
+- name: dhcp_release | reload service
+  service:
+    name: dhcp_release.service
+    state: started
+    enabled: yes
+
