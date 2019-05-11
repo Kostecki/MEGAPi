@@ -82,8 +82,7 @@ and add the following to setup DHCP
 ```
 interface=wlan0
   dhcp-range=10.0.0.10,10.0.0.254,255.255.255.0,24h
-  dhcp-option=wireless-net,3
-  dhcp-option=wireless-net,6
+  dhcp-option=6,1.1.1.1,1.0.0.1
 ```
 This will provide addresses in the range `10.0.0.10` to `10.0.0.254` with a lease time of 24 hours and set `1.1.1.1` and `1.0.0.1` as DNS servers.
 
