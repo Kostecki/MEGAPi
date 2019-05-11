@@ -33,8 +33,8 @@ The base image of the Raspbian OS has had the following changes made before star
 It's probably also a good idea to do the following after installing:
 * Change root password
 
-Download the modified base image: TODO   
-Downloading the finished image: TODO
+Download the modified base image: [megapi_raspbian_2019_04_08_base.dmg](http://mega.re/public/megapi_raspbian_2019_04_08_base.dmg)   
+Downloading the finished image: [megapi_raspbian_2019_04_08_full.dmg](http://mega.re/public/megapi_raspbian_2019_04_08_base.dmg)
 
 ## Software
 * hostapd
