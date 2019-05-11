@@ -214,6 +214,14 @@ sudo sh -c "iptables-save > /etc/iptables/rules.v4"
 ## Statistics
 TODO: https://serverfault.com/questions/533513/how-to-get-tx-rx-bytes-without-ifconfig
 
+Something, something - bytes since boot:
+```   
+cat /sys/class/net/eth0/statistics/rx_bytes   
+cat /sys/class/net/eth0/statistics/rx_packets
+
+cat /sys/class/net/eth0/statistics/tx_packets   
+cat /sys/class/net/eth0/statistics/tx_bytes
+```
 
 ## Handle Power Loss
 A read only OS is a giant pain in the ass.   
