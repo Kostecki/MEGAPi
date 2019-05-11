@@ -161,6 +161,19 @@ sudo systemctl start dnsmasq
 sudo systemctl start hostapd
 ```
 
+The hostapd.service _might_ be masked, and as such Hostapd won't start.   
+This can be fixed with the follwing commands:
+```
+sudo systemctl unmask hostapd
+sudo systemctl enable hostapd
+sudo systemctl start hostapd
+```
+
+Hostapd should be able to start now
+```
+sudo systemctl start hostapd
+```
+
 ## 3G Connectivity
 The Huawei E3372h should just work out of the box as `eth1`
 
@@ -241,3 +254,4 @@ dtparam=pwr_led_activelow=off
 * https://jeffgeerling.com/blogs/jeff-geerling/raspberry-pi-zero-conserve-energy
 * https://serverfault.com/questions/533513/how-to-get-tx-rx-bytes-without-ifconfig
 * https://raspi-ups.appspot.com/en/index.jsp
+* https://github.com/raspberrypi/documentation/issues/1018
